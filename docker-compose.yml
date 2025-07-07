@@ -1,0 +1,30 @@
+services:
+  backend1:
+    build:
+      context: ./backend
+    container_name: backend1
+    networks:
+      - lb-net
+
+  backend2:
+    build:
+      context: ./backend
+    container_name: backend2
+    networks:
+      - lb-net
+
+  haproxy:
+    build:
+      context: ./haproxy
+    container_name: l4lb
+    ports:
+      - "8080:80"  # Host port 8080 -> HAProxy 80
+    depends_on:
+      - backend1
+      - backend2
+    networks:
+      - lb-net
+
+networks:
+  lb-net:
+    driver: bridge
